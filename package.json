@@ -1,0 +1,19 @@
+{
+  "name": "gallary-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "node generator/generate.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "sharp": "^0.34.5",
+    "vite": "^4.5.14"
+  },
+  "dependencies": {
+    "ejs": "^4.0.1"
+  }
+}

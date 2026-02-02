@@ -1,0 +1,41 @@
+{
+  "id": "architecture",
+  "title": "现代建筑",
+  "author": "Fan Kangsong",
+  "cover": "https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=2800&auto=format&fit=crop",
+  "description": "线条与光影的交织，展现人类智慧的结晶。从摩天大楼到极简住宅，建筑不仅是居住的空间，更是艺术的表达。",
+  "images": [
+    {
+      "src": "https://images.unsplash.com/photo-1486406140526-aba0c67fe156?q=80&w=2000&h=1333&auto=format&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1486406140526-aba0c67fe156?q=80&w=400&auto=format&fit=crop",
+      "width": 2000,
+      "height": 1333,
+      "alt": "Glass building",
+      "author": "Simone Hutsch"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=2000&h=1333&auto=format&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=400&auto=format&fit=crop",
+      "width": 2000,
+      "height": 1333,
+      "alt": "Urban architecture",
+      "author": "Joel Filipe"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?q=80&w=2000&h=1333&auto=format&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?q=80&w=400&auto=format&fit=crop",
+      "width": 2000,
+      "height": 1333,
+      "alt": "Interior design",
+      "author": "Sidekix Media"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1356149467610-664875c742c3?q=80&w=2000&h=1333&auto=format&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1356149467610-664875c742c3?q=80&w=400&auto=format&fit=crop",
+      "width": 2000,
+      "height": 1333,
+      "alt": "Office building",
+      "author": "Scott Webb"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "汕头",
+  "title": "汕头",
+  "author": "Fan Kangsong",
+  "cover": "images/汕头/large_R0004079.jpg",
+  "description": "",
+  "images": [
+    {
+      "src": "images/汕头/large_R0004079.jpg",
+      "thumbnail": "images/汕头/thumb_R0004079.jpg",
+      "width": 1920,
+      "height": 1280,
+      "alt": "R0004079",
+      "author": "Unknown"
+    },
+    {
+      "src": "images/汕头/large_R0004232.jpg",
+      "thumbnail": "images/汕头/thumb_R0004232.jpg",
+      "width": 2000,
+      "height": 3000,
+      "alt": "R0004232",
+      "author": "Unknown"
+    },
+    {
+      "src": "images/汕头/large_R0004276.jpg",
+      "thumbnail": "images/汕头/thumb_R0004276.jpg",
+      "width": 1280,
+      "height": 1920,
+      "alt": "R0004276",
+      "author": "Unknown"
+    },
+    {
+      "src": "images/汕头/large_R0004297.jpg",
+      "thumbnail": "images/汕头/thumb_R0004297.jpg",
+      "width": 1920,
+      "height": 1280,
+      "alt": "R0004297",
+      "author": "Unknown"
+    }
+  ]
+}
