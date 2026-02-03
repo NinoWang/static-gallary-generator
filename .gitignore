@@ -142,3 +142,6 @@ vite.config.ts.timestamp-*
 
 
 ./generator/photos/
+./web/images
+./web/data
+./web/fonts

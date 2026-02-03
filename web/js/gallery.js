@@ -35,9 +35,11 @@ async function renderNavigation() {
     const response = await fetch("config/nav.json");
     const navItems = await response.json();
     const navLinksContainer = document.getElementById("nav-links");
+    const mobileNavLinksContainer = document.getElementById("mobile-nav-links");
 
     // Clear existing just in case
     navLinksContainer.innerHTML = "";
+    if (mobileNavLinksContainer) mobileNavLinksContainer.innerHTML = "";
 
     // Get current filename to set active state
     const currentPath = window.location.pathname;
@@ -45,11 +47,6 @@ async function renderNavigation() {
       currentPath.substring(currentPath.lastIndexOf("/") + 1) || "nature.html"; // default to nature if root
 
     navItems.forEach((item) => {
-      const link = document.createElement("a");
-      link.href = item.link;
-      link.textContent = item.title;
-
-      // Check active state
       // Logic: if current file matches link, OR if link is 'nature.html' and current file is empty/index.html
       let isActive = false;
       if (item.link === currentFile) isActive = true;
@@ -59,13 +56,42 @@ async function renderNavigation() {
       )
         isActive = true;
 
+      // Desktop Link
+      const link = document.createElement("a");
+      link.href = item.link;
+      link.textContent = item.title;
       link.className = `font-bold px-3 py-1.5 rounded-md transition-all duration-300 backdrop-blur-sm ${
         isActive
-          ? "bg-white text-gray-900 shadow-md"
-          : "bg-white/10 text-white hover:bg-white/50"
+          ? "bg-white text-gray-900 shadow-md scale-105"
+          : "bg-white/10 text-white hover:bg-white/20 hover:scale-105"
       }`;
       navLinksContainer.appendChild(link);
+
+      // Mobile Link
+      if (mobileNavLinksContainer) {
+        const mobileLink = document.createElement("a");
+        mobileLink.href = item.link;
+        mobileLink.textContent = item.title;
+        mobileLink.className = `text-2xl font-bold transition-colors ${
+          isActive ? "text-white" : "text-white/60 hover:text-white"
+        }`;
+        mobileNavLinksContainer.appendChild(mobileLink);
+      }
     });
+
+    // Mobile Menu Interaction
+    const menuBtn = document.getElementById("mobile-menu-btn");
+    const closeBtn = document.getElementById("close-menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    if (menuBtn && closeBtn && mobileMenu) {
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.remove("translate-x-full");
+      });
+      closeBtn.addEventListener("click", () => {
+        mobileMenu.classList.add("translate-x-full");
+      });
+    }
   } catch (error) {
     console.error("Error loading navigation:", error);
   }
@@ -132,17 +158,17 @@ function renderGrid(data) {
                data-pswp-height="${img.height}" 
                data-author="${img.author || ""}"
                target="_blank"
-               class="relative aspect-square overflow-hidden bg-gray-100 group">
+               class="relative block mb-4 break-inside-avoid group overflow-hidden rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300">
                 <img src="${img.thumbnail || img.src}" 
                      alt="${img.alt || ""}" 
-                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                     class="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
                      loading="lazy" />
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
                 ${
                   img.author
                     ? `
-                <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p class="text-white text-xs md:text-sm font-medium tracking-wide truncate">© ${img.author}</p>
+                <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p class="text-white text-xs font-medium tracking-wide truncate">© ${img.author}</p>
                 </div>
                 `
                     : ""
@@ -165,7 +191,7 @@ function renderFooter(data) {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <p class="text-gray-500 text-sm">
                 © ${new Date().getFullYear()} ${
-    data.author || "Gallery App"
+    data.author
   }. All rights reserved.
             </p>
         </div>
@@ -178,6 +204,16 @@ function initPhotoSwipe() {
     gallery: "#gallery-grid",
     children: "a",
     pswpModule: PhotoSwipe,
+    // Optimize animation and transition
+    // showHideOpacity: true, // Fade opacity for smoother transition
+    // showAnimationDuration: 500, // Slightly slower animation
+    // hideAnimationDuration: 400,
+    // bgOpacity: 0.92, // Darker background
+    // wheelToZoom: true, // Enable mouse wheel zoom
+    // // Improve closing behavior
+    // closeOnVerticalDrag: true,
+    // // Add padding to avoid edge sticking
+    // padding: { top: 20, bottom: 20, left: 20, right: 20 },
   });
 
   lightbox.on("uiRegister", function () {

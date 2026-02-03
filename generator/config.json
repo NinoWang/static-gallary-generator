@@ -1,9 +1,9 @@
 {
   "thumbnail": {
-    "width": 300,
-    "height": 300,
+    "width": 400,
+    "height": 400,
     "quality": 80,
-    "fit": "cover"
+    "fit": "inside"
   },
   "large": {
     "maxSize": 3000,
@@ -11,9 +11,9 @@
     "fit": "inside"
   },
   "supportedExtensions": [".jpg", ".jpeg", ".png", ".webp"],
-  "defaultAuthor": "Fan Kangsong",
+  "defaultAuthor": "Fan Kangsong(Colin)",
   "website": {
-    "titleSuffix": "imcolin.fan",
-    "navBrand": "📷 Colin's Photo Gallery"
+    "url": "imcolin.fan",
+    "navBrand": "COLIN PHOTO"
   }
 }

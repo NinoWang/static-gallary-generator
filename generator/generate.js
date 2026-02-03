@@ -22,7 +22,7 @@ if (!fs.existsSync(FONTS_DIR)) fs.mkdirSync(FONTS_DIR, { recursive: true });
 
 // Collect all text for font subsetting
 let allText = "";
-allText += config.website.titleSuffix;
+allText += config.website.url;
 allText += config.website.navBrand;
 allText += config.defaultAuthor;
 
@@ -41,6 +41,20 @@ async function processAlbum(albumDirName) {
       meta = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
     } catch (e) {
       console.error(`Error reading meta.json for ${albumDirName}:`, e);
+    }
+  } else {
+    // Auto-generate meta.json
+    console.log(`  meta.json not found, creating default for: ${albumDirName}`);
+    meta = {
+      id: albumDirName,
+      title: albumDirName,
+      author: config.defaultAuthor,
+      description: [],
+    };
+    try {
+      fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+    } catch (e) {
+      console.error(`Error writing default meta.json for ${albumDirName}:`, e);
     }
   }
 
