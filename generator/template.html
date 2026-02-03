@@ -13,14 +13,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/umd/photoswipe.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/umd/photoswipe-lightbox.umd.min.js"></script>
   <style>
+    @font-face {
+      font-family: 'Source Han Serif CN';
+      src: url('fonts/SourceHanSerifCN-Regular.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
     body {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      font-family: 'Courier New', Courier, monospace;
     }
   </style>
 </head>
 
-<body class="bg-white text-gray-900 font-sans">
+<body class="bg-white text-gray-900">
 
   <!-- Navigation -->
   <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 text-white">
@@ -30,7 +39,7 @@
           class="text-2xl font-bold tracking-tight hover:opacity-80 transition-opacity drop-shadow-md">
           <%= WEBSITE_NAV_BRAND %>
         </a>
-        <div id="nav-links" class="flex space-x-8 text-sm font-medium drop-shadow-md">
+        <div id="nav-links" class="flex space-x-3 text-sm font-medium">
         </div>
       </div>
     </div>

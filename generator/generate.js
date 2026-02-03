@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 const ejs = require("ejs");
+const Fontmin = require("fontmin");
 const config = require("./config.json");
 
 const PHOTOS_DIR = path.join(__dirname, "photos");
@@ -9,12 +10,21 @@ const WEB_DIR = path.join(__dirname, "../web");
 const DATA_DIR = path.join(WEB_DIR, "data");
 const IMAGES_DIR = path.join(WEB_DIR, "images");
 const CONFIG_DIR = path.join(WEB_DIR, "config");
+const FONTS_DIR = path.join(WEB_DIR, "fonts");
 const TEMPLATE_PATH = path.join(__dirname, "template.html");
+const SOURCE_FONT = path.join(__dirname, "fonts/SourceHanSerifCN-Regular.otf");
 
 // Ensure directories exist
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
 if (!fs.existsSync(CONFIG_DIR)) fs.mkdirSync(CONFIG_DIR, { recursive: true });
+if (!fs.existsSync(FONTS_DIR)) fs.mkdirSync(FONTS_DIR, { recursive: true });
+
+// Collect all text for font subsetting
+let allText = "";
+allText += config.website.titleSuffix;
+allText += config.website.navBrand;
+allText += config.defaultAuthor;
 
 async function processAlbum(albumDirName) {
   const albumPath = path.join(PHOTOS_DIR, albumDirName);
@@ -37,6 +47,15 @@ async function processAlbum(albumDirName) {
   // Default ID to folder name if not present
   const id = meta.id || albumDirName;
   const title = meta.title || albumDirName;
+
+  // Collect text
+  allText += title;
+  allText += meta.author || "";
+  allText += meta.description
+    ? Array.isArray(meta.description)
+      ? meta.description.join("")
+      : meta.description
+    : "";
 
   // Prepare output directory for images
   const albumImagesOutDir = path.join(IMAGES_DIR, id);
@@ -202,6 +221,48 @@ async function main() {
   // Write Nav JSON
   fs.writeFileSync(navPath, JSON.stringify(existingNav, null, 2));
   console.log("Updated nav.json");
+
+  // Collect nav items text
+  existingNav.forEach((item) => {
+    allText += item.title;
+  });
+
+  // Generate Font Subset
+  if (fs.existsSync(SOURCE_FONT)) {
+    console.log("Generating font subset...");
+    // Filter unique characters to reduce size? Fontmin does this?
+    // Actually fontmin might need explicit text.
+    // Remove duplicates and non-chinese/non-display chars roughly?
+    // Fontmin handles unique chars internally usually, but let's just pass the string.
+
+    const fontmin = new Fontmin()
+      .src(SOURCE_FONT)
+      .use(
+        Fontmin.glyph({
+          text: allText,
+          hinting: false,
+        })
+      )
+      .dest(FONTS_DIR);
+
+    await new Promise((resolve, reject) => {
+      fontmin.run((err, files) => {
+        if (err) {
+          console.error("Fontmin error:", err);
+          reject(err);
+        } else {
+          console.log("Font subset generated successfully!");
+          resolve();
+        }
+      });
+    });
+  } else {
+    console.warn(
+      "Source font not found, skipping subset generation:",
+      SOURCE_FONT
+    );
+  }
+
   console.log("Generation complete!");
 }
 

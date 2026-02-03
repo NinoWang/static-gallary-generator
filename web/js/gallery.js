@@ -59,8 +59,10 @@ async function renderNavigation() {
       )
         isActive = true;
 
-      link.className = `hover:opacity-100 transition-opacity ${
-        isActive ? "opacity-100 font-bold" : "opacity-70"
+      link.className = `font-bold px-3 py-1.5 rounded-md transition-all duration-300 backdrop-blur-sm ${
+        isActive
+          ? "bg-white text-gray-900 shadow-md"
+          : "bg-white/10 text-white hover:bg-white/50"
       }`;
       navLinksContainer.appendChild(link);
     });
