@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 const ejs = require("ejs");
+const config = require("./config.json");
 
 const PHOTOS_DIR = path.join(__dirname, "photos");
 const WEB_DIR = path.join(__dirname, "../web");
@@ -45,7 +46,7 @@ async function processAlbum(albumDirName) {
   // Process images
   const files = fs.readdirSync(albumPath).filter((file) => {
     const ext = path.extname(file).toLowerCase();
-    return [".jpg", ".jpeg", ".png", ".webp"].includes(ext);
+    return config.supportedExtensions.includes(ext);
   });
 
   const imagesData = [];
@@ -63,8 +64,10 @@ async function processAlbum(albumDirName) {
     // 1. Generate Thumbnail (300x300, cover)
     if (!fs.existsSync(thumbPath)) {
       await sharp(filePath)
-        .resize(300, 300, { fit: "cover" })
-        .toFormat("jpeg", { quality: 80 })
+        .resize(config.thumbnail.width, config.thumbnail.height, {
+          fit: config.thumbnail.fit,
+        })
+        .toFormat("jpeg", { quality: config.thumbnail.quality })
         .toFile(thumbPath);
       console.log(`  Generated thumbnail: ${thumbFilename}`);
     }
@@ -78,16 +81,24 @@ async function processAlbum(albumDirName) {
       const metadata = await image.metadata();
 
       // Resize if needed
-      if (metadata.width > 3000 || metadata.height > 3000) {
+      if (
+        metadata.width > config.large.maxSize ||
+        metadata.height > config.large.maxSize
+      ) {
         await image
-          .resize(3000, 3000, { fit: "inside", withoutEnlargement: true })
-          .toFormat("jpeg", { quality: 90 })
+          .resize(config.large.maxSize, config.large.maxSize, {
+            fit: config.large.fit,
+            withoutEnlargement: true,
+          })
+          .toFormat("jpeg", { quality: config.large.quality })
           .toFile(largePath);
         console.log(`  Generated large image: ${largeFilename}`);
       } else {
         // Just copy or convert to jpeg if not resizing?
         // Let's standardize on jpeg for web
-        await image.toFormat("jpeg", { quality: 90 }).toFile(largePath);
+        await image
+          .toFormat("jpeg", { quality: config.large.quality })
+          .toFile(largePath);
         console.log(`  Processed large image: ${largeFilename}`);
       }
     }
@@ -111,7 +122,7 @@ async function processAlbum(albumDirName) {
   const albumData = {
     id: id,
     title: title,
-    author: meta.author || "Fan Kangsong",
+    author: meta.author || config.defaultAuthor,
     cover: meta.cover || (imagesData.length > 0 ? imagesData[0].src : ""),
     description: meta.description || "",
     images: imagesData,
@@ -127,6 +138,8 @@ async function processAlbum(albumDirName) {
   const htmlContent = ejs.render(htmlTemplate, {
     DATA_FILE: `${id}.json`,
     TITLE: title,
+    WEBSITE_TITLE_SUFFIX: config.website.titleSuffix,
+    WEBSITE_NAV_BRAND: config.website.navBrand,
   });
   const htmlPath = path.join(WEB_DIR, `${id}.html`);
   fs.writeFileSync(htmlPath, htmlContent);

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>
-    <%= TITLE %> - imcolin.fan
+    <%= TITLE %> - <%= WEBSITE_TITLE_SUFFIX %>
   </title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/photoswipe.min.css">
@@ -28,7 +28,7 @@
       <div class="flex justify-between items-center h-20">
         <a href="index.html"
           class="text-2xl font-bold tracking-tight hover:opacity-80 transition-opacity drop-shadow-md">
-          📷 Colin's Photo Gallery
+          <%= WEBSITE_NAV_BRAND %>
         </a>
         <div id="nav-links" class="flex space-x-8 text-sm font-medium drop-shadow-md">
         </div>
@@ -46,19 +46,19 @@
         class="absolute bottom-0 left-0 right-0 pb-24 md:pb-32 px-6 md:px-12 max-w-7xl mx-auto flex flex-col justify-end h-full z-10">
         <div class="max-w-4xl">
           <h1 id="album-title"
-            class="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight drop-shadow-lg translate-y-8 opacity-0 transition-all duration-700 delay-100">
+            class="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 tracking-tight drop-shadow-xl translate-y-8 opacity-0 transition-all duration-700 delay-100">
           </h1>
-          <p id="album-desc"
-            class="text-lg md:text-2xl text-white/90 leading-relaxed drop-shadow-md translate-y-8 opacity-0 transition-all duration-700 delay-300 max-w-2xl">
-          </p>
+          <div id="album-desc"
+            class=" text-white leading-loose drop-shadow-lg translate-y-8 opacity-0 transition-all duration-700 delay-300 max-w-3xl">
+          </div>
         </div>
       </div>
     </header>
 
-    <div class="w-full bg-white">
-      <div id="gallery-grid"
-        class="pswp-gallery grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-0 opacity-0 transition-opacity duration-700 delay-200">
-      </div>
+    <div class="w-full bg-white mt-5"></div>
+    <div id="gallery-grid"
+      class="pswp-gallery grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-0 opacity-0 transition-opacity duration-700 delay-200">
+    </div>
     </div>
   </main>
 

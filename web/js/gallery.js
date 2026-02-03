@@ -72,7 +72,15 @@ async function renderNavigation() {
 function renderHeader(data) {
   document.title = `${data.title} - Gallery`;
   document.getElementById("album-title").textContent = data.title;
-  document.getElementById("album-desc").textContent = data.description;
+
+  const descEl = document.getElementById("album-desc");
+  if (Array.isArray(data.description)) {
+    descEl.innerHTML = data.description
+      .map((line) => `<p class="block">${line}</p>`)
+      .join("");
+  } else {
+    descEl.textContent = data.description;
+  }
 
   const heroBg = document.getElementById("hero-bg");
   if (data.cover) {
