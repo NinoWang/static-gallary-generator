@@ -34,20 +34,19 @@ async function renderNavigation() {
   try {
     const response = await fetch("config/nav.json");
     const navItems = await response.json();
-    const navLinksContainer = document.getElementById("nav-links");
     const mobileNavLinksContainer = document.getElementById("mobile-nav-links");
 
-    // Clear existing just in case
-    navLinksContainer.innerHTML = "";
-    if (mobileNavLinksContainer) mobileNavLinksContainer.innerHTML = "";
+    if (!mobileNavLinksContainer) return;
+
+    // Clear existing
+    mobileNavLinksContainer.innerHTML = "";
 
     // Get current filename to set active state
     const currentPath = window.location.pathname;
     const currentFile =
-      currentPath.substring(currentPath.lastIndexOf("/") + 1) || "nature.html"; // default to nature if root
+      currentPath.substring(currentPath.lastIndexOf("/") + 1) || "nature.html";
 
     navItems.forEach((item) => {
-      // Logic: if current file matches link, OR if link is 'nature.html' and current file is empty/index.html
       let isActive = false;
       if (item.link === currentFile) isActive = true;
       if (
@@ -56,41 +55,55 @@ async function renderNavigation() {
       )
         isActive = true;
 
-      // Desktop Link
       const link = document.createElement("a");
       link.href = item.link;
-      link.textContent = item.title;
-      link.className = `font-bold px-3 py-1.5 rounded-md transition-all duration-300 backdrop-blur-sm ${
+      link.className = `group flex items-center justify-between py-4 px-6 rounded-2xl transition-all duration-500 ${
         isActive
-          ? "bg-white text-gray-900 shadow-md scale-105"
-          : "bg-white/10 text-white hover:bg-white/20 hover:scale-105"
+          ? "bg-white/10 text-white translate-x-2"
+          : "text-white/50 hover:text-white hover:bg-white/5 hover:translate-x-1"
       }`;
-      navLinksContainer.appendChild(link);
 
-      // Mobile Link
-      if (mobileNavLinksContainer) {
-        const mobileLink = document.createElement("a");
-        mobileLink.href = item.link;
-        mobileLink.textContent = item.title;
-        mobileLink.className = `text-2xl font-bold transition-colors ${
-          isActive ? "text-white" : "text-white/60 hover:text-white"
-        }`;
-        mobileNavLinksContainer.appendChild(mobileLink);
-      }
+      link.innerHTML = `
+        <span class="text-xl md:text-2xl font-bold tracking-tight break-words pr-4">${
+          item.title
+        }</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform transition-transform duration-500 ${
+          isActive
+            ? "opacity-100 translate-x-0"
+            : "opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0"
+        }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      `;
+
+      mobileNavLinksContainer.appendChild(link);
     });
 
     // Mobile Menu Interaction
     const menuBtn = document.getElementById("mobile-menu-btn");
     const closeBtn = document.getElementById("close-menu-btn");
     const mobileMenu = document.getElementById("mobile-menu");
+    const menuBackdrop = document.getElementById("menu-backdrop");
+    const menuPanel = document.getElementById("menu-panel");
 
-    if (menuBtn && closeBtn && mobileMenu) {
-      menuBtn.addEventListener("click", () => {
-        mobileMenu.classList.remove("translate-x-full");
-      });
-      closeBtn.addEventListener("click", () => {
-        mobileMenu.classList.add("translate-x-full");
-      });
+    if (menuBtn && closeBtn && mobileMenu && menuPanel) {
+      const openMenu = () => {
+        mobileMenu.classList.remove("pointer-events-none");
+        if (menuBackdrop) menuBackdrop.classList.remove("opacity-0");
+        menuPanel.classList.remove("translate-x-full");
+        document.body.style.overflow = "hidden";
+      };
+
+      const closeMenu = () => {
+        mobileMenu.classList.add("pointer-events-none");
+        if (menuBackdrop) menuBackdrop.classList.add("opacity-0");
+        menuPanel.classList.add("translate-x-full");
+        document.body.style.overflow = "";
+      };
+
+      menuBtn.addEventListener("click", openMenu);
+      closeBtn.addEventListener("click", closeMenu);
+      if (menuBackdrop) menuBackdrop.addEventListener("click", closeMenu);
     }
   } catch (error) {
     console.error("Error loading navigation:", error);
@@ -194,6 +207,7 @@ function renderFooter(data) {
     data.author
   }. All rights reserved.
             </p>
+            <p class="text-gray-500 text-sm">Powered by <a href="https://github.com/fankangsong/static-gallary-generator" target="_blank" class="text-blue-600 hover:underline">static-gallary-generator</a>
         </div>
     `;
   document.querySelector("main").appendChild(footer);
@@ -249,6 +263,7 @@ function initPhotoSwipe() {
 
 function initNavbarEffect() {
   const navbar = document.getElementById("navbar");
+  const menuBtn = document.getElementById("mobile-menu-btn");
 
   // Initial check
   updateNavbar();
@@ -264,6 +279,11 @@ function initNavbarEffect() {
         "text-gray-900"
       );
       navbar.classList.remove("text-white");
+
+      if (menuBtn) {
+        menuBtn.classList.remove("text-white", "hover:bg-white/10");
+        menuBtn.classList.add("text-gray-900", "hover:bg-black/5");
+      }
     } else {
       navbar.classList.remove(
         "bg-white/90",
@@ -272,6 +292,11 @@ function initNavbarEffect() {
         "text-gray-900"
       );
       navbar.classList.add("text-white");
+
+      if (menuBtn) {
+        menuBtn.classList.add("text-white", "hover:bg-white/10");
+        menuBtn.classList.remove("text-gray-900", "hover:bg-black/5");
+      }
     }
   }
 }
