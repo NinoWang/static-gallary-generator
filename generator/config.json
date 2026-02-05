@@ -19,6 +19,10 @@
       "enabled": true,
       "src": "assets/logo.svg",
       "width": "180px"
+    },
+    "font": {
+      "name": "KingHwaOldSong",
+      "source": "fonts/京華老宋体v3.0.ttf"
     }
   }
 }

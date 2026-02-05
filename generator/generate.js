@@ -13,7 +13,12 @@ const CONFIG_DIR = path.join(WEB_DIR, "config");
 const FONTS_DIR = path.join(WEB_DIR, "fonts");
 const TEMPLATE_PATH = path.join(__dirname, "template.html");
 const INDEX_TEMPLATE_PATH = path.join(__dirname, "index_template.html");
-const SOURCE_FONT = path.join(__dirname, "fonts/SourceHanSerifCN-Regular.otf");
+const SOURCE_FONT = path.join(
+  __dirname,
+  config.website.font
+    ? config.website.font.source
+    : "fonts/SourceHanSerifCN-Regular.otf"
+);
 
 // Ensure directories exist
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -175,6 +180,7 @@ async function processAlbum(albumDirName) {
     WEBSITE_TITLE_SUFFIX: config.website.url,
     WEBSITE_NAV_BRAND: config.website.navBrand,
     WEBSITE_LOGO: config.website.logo,
+    WEBSITE_FONT: config.website.font,
   });
   const htmlPath = path.join(WEB_DIR, `${id}.html`);
   fs.writeFileSync(htmlPath, htmlContent);

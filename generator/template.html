@@ -13,18 +13,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/umd/photoswipe.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/umd/photoswipe-lightbox.umd.min.js"></script>
   <style>
-    @font-face {
-      font-family: 'Source Han Serif CN';
-      src: url('fonts/SourceHanSerifCN-Regular.otf') format('opentype');
-      font-weight: normal;
-      font-style: normal;
-      font-display: swap;
+    <% if (WEBSITE_FONT) {
+      %>@font-face {
+        font-family: '<%= WEBSITE_FONT.name %>';
+        src: url('<%= "fonts/" + WEBSITE_FONT.source.split("/").pop() %>') format('opentype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      <%
     }
 
-    body {
+    %>body {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      font-family: 'Courier New', Courier, monospace;
+      font-family: <%- WEBSITE_FONT ? `'${WEBSITE_FONT.name}',
+      `: '' %> 'Courier New', Courier, monospace;
     }
   </style>
 </head>
