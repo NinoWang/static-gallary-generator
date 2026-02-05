@@ -9,11 +9,38 @@ async function initGallery(dataPath) {
     const response = await fetch(dataPath);
     const albumData = await response.json();
 
-    // 3. Render Header
-    renderHeader(albumData);
+    // 3. Render Header (if not already rendered by SSR)
+    const titleEl = document.getElementById("album-title");
+    if (!titleEl.textContent.trim()) {
+      renderHeader(albumData);
+    } else {
+      // Trigger animations even if SSR rendered
+      requestAnimationFrame(() => {
+        const heroBg = document.getElementById("hero-bg");
+        if (heroBg) {
+          heroBg.classList.remove("opacity-0");
+          heroBg.classList.remove("scale-105");
+          heroBg.classList.add("scale-100");
+        }
+      });
+      setTimeout(() => {
+        const title = document.getElementById("album-title");
+        const desc = document.getElementById("album-desc");
+        if (title) title.classList.remove("translate-y-8", "opacity-0");
+        if (desc) desc.classList.remove("translate-y-8", "opacity-0");
 
-    // 4. Render Grid
-    renderGrid(albumData);
+        // Author logic might need check if exists, but for now simple animation trigger
+      }, 100);
+    }
+
+    // 4. Render Grid (if not already rendered by SSR)
+    const gridContainer = document.getElementById("gallery-grid");
+    if (!gridContainer.children.length) {
+      renderGrid(albumData);
+    } else {
+      // Trigger animation for grid
+      gridContainer.classList.remove("opacity-0");
+    }
 
     // 5. Initialize PhotoSwipe
     initPhotoSwipe();

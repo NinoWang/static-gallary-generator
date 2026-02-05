@@ -4,10 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="<%= DESCRIPTION %>">
+  <link rel="icon" href="/favicon-32x32.png" type="image/png">
   <title>
     <%= TITLE %> - <%= WEBSITE_TITLE_SUFFIX %>
   </title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/photoswipe.min.css">
   <!-- Load PhotoSwipe UMD -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/umd/photoswipe.umd.min.js"></script>
@@ -28,8 +31,21 @@
     %>body {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      font-family: <%- WEBSITE_FONT ? `'${WEBSITE_FONT.name}',
-      `: '' %> 'Courier New', Courier, monospace;
+      font-family: 'Courier New',
+      Courier,
+      <%- WEBSITE_FONT ? `'${WEBSITE_FONT.name}' `: '' %>, monospace;
+    }
+
+    a:link,
+    a:visited {
+      color: #4a8cd3;
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:focus {
+      color: #171868;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -40,8 +56,7 @@
   <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-20">
-        <a href="index.html"
-          class="p-2 bg-white/80 w-[180px] hover:opacity-80 transition-opacity flex items-center rounded-lg">
+        <a href="/" class="p-2 bg-white/80 w-[180px] hover:opacity-80 transition-opacity flex items-center rounded-lg">
           <% if (WEBSITE_LOGO && WEBSITE_LOGO.enabled && WEBSITE_LOGO.src) { %>
             <img src="<%= WEBSITE_LOGO.src %>" alt="<%= WEBSITE_NAV_BRAND %>"
               width="<%= WEBSITE_LOGO.width || '180px' %>" class="block h-auto">
@@ -97,10 +112,13 @@
     </div>
   </div>
 
+
+
   <main class="min-h-screen">
     <header id="album-header" class="relative h-screen w-full overflow-hidden bg-gray-900">
       <div id="hero-bg"
-        class="absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-1000 transform scale-105">
+        class="absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-1000 transform scale-105"
+        style="background-image: url('<%= ALBUM_DATA.cover %>');">
       </div>
       <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80"></div>
       <div
@@ -108,20 +126,76 @@
         <div class="max-w-4xl">
           <h1 id="album-title"
             class="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 tracking-tight drop-shadow-xl translate-y-8 opacity-0 transition-all duration-700 delay-100">
+            <%= ALBUM_DATA.title %>
           </h1>
           <div id="album-desc"
             class=" text-white leading-loose drop-shadow-lg translate-y-8 opacity-0 transition-all duration-700 delay-300 max-w-3xl">
+            <% if (Array.isArray(ALBUM_DATA.description)) { %>
+              <% ALBUM_DATA.description.forEach(function(line) { %>
+                <p class="block">
+                  <%= line %>
+                </p>
+                <% }); %>
+                  <% } else { %>
+                    <%= ALBUM_DATA.description %>
+                      <% } %>
           </div>
         </div>
       </div>
     </header>
 
-    <div class="w-full bg-white mt-5"></div>
-    <div id="gallery-grid"
-      class="pswp-gallery max-w-7xl mx-auto columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 px-4 pb-12 opacity-0 transition-opacity duration-700 delay-200">
-    </div>
-    </div>
+    <% if (typeof CONTENT_HTML !=='undefined' && CONTENT_HTML) { %>
+      <div id="text-content" class="max-w-3xl mx-auto px-6 py-16 prose prose-lg text-black 
+    prose-headings:font-bold prose-headings:text-black 
+    prose-h1:text-4xl prose-h1:mb-8 prose-h1:tracking-tight
+    prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:border-b prose-h2:pb-2
+    prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4
+    prose-p:leading-relaxed prose-p:mb-6 prose-p:text-justify
+    prose-blockquote:border-l-4 prose-blockquote:border-gray-300 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-600
+    prose-ul:list-disc prose-ul:pl-5 prose-ul:mb-6
+    prose-ol:list-decimal prose-ol:pl-5 prose-ol:mb-6
+    prose-li:mb-1 prose-li:leading-snug
+    prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
+    prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
+    prose-strong:font-bold prose-strong:text-black">
+        <%- CONTENT_HTML %>
+      </div>
+      <% } %>
+
+        <div class="w-full bg-white mt-5"></div>
+        <div id="gallery-grid"
+          class="pswp-gallery max-w-7xl mx-auto columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 px-4 pb-12 opacity-0 transition-opacity duration-700 delay-200">
+          <% ALBUM_DATA.images.forEach(function(img) { %>
+            <a href="<%= img.src %>" data-pswp-width="<%= img.width %>" data-pswp-height="<%= img.height %>"
+              data-author="<%= img.author || '' %>" target="_blank"
+              class="relative block mb-4 break-inside-avoid group overflow-hidden rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300">
+              <img src="<%= img.thumbnail || img.src %>" alt="<%= img.alt || '' %>"
+                class="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
+                loading="lazy" />
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+              <% if (img.author) { %>
+                <div
+                  class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p class="text-white text-xs font-medium tracking-wide truncate">© <%= img.author %>
+                  </p>
+                </div>
+                <% } %>
+            </a>
+            <% }); %>
+        </div>
+        </div>
   </main>
+
+  <footer class="text-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-gray-500 text-sm">
+        © <%= FULL_YEAR %>
+          <%= AUTHOR %>. All rights reserved.
+      </p>
+      <p class="text-gray-500 text-sm">Generated by <a href="https://github.com/fankangsong/static-gallary-generator"
+          target="_blank" class="text-blue-600 hover:underline">static-gallary-generator</a>
+    </div>
+  </footer>
 
   <script src="js/gallery.js"></script>
   <script>

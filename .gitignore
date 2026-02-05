@@ -149,3 +149,5 @@ web/fonts/
 web/*.html
 
 *.sh
+
+web/favicon-32x32.png

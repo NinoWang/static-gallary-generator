@@ -3,6 +3,8 @@ const path = require("path");
 const sharp = require("sharp");
 const ejs = require("ejs");
 const Fontmin = require("fontmin");
+const { marked } = require("marked");
+const sanitizeHtml = require("sanitize-html");
 const config = require("./config.json");
 
 const PHOTOS_DIR = path.join(__dirname, "photos");
@@ -67,6 +69,33 @@ async function processAlbum(albumDirName) {
   // Default ID to folder name if not present
   const id = meta.id || albumDirName;
   const title = meta.title || albumDirName;
+
+  // Read content.md if exists
+  let contentHtml = "";
+  const contentPath = path.join(albumPath, "content.md");
+  if (fs.existsSync(contentPath)) {
+    try {
+      const markdown = fs.readFileSync(contentPath, "utf-8");
+      allText += markdown; // Add markdown content to font subset
+      const rawHtml = marked.parse(markdown);
+      contentHtml = sanitizeHtml(rawHtml, {
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+          "img",
+          "h1",
+          "h2",
+          "span",
+        ]),
+        allowedAttributes: {
+          ...sanitizeHtml.defaults.allowedAttributes,
+          img: ["src", "alt", "title", "width", "height", "class"],
+          "*": ["class", "style"],
+        },
+      });
+      console.log(`  Processed content.md for: ${albumDirName}`);
+    } catch (e) {
+      console.error(`Error processing content.md for ${albumDirName}:`, e);
+    }
+  }
 
   // Collect text
   allText += title;
@@ -176,11 +205,16 @@ async function processAlbum(albumDirName) {
   const htmlTemplate = fs.readFileSync(TEMPLATE_PATH, "utf-8");
   const htmlContent = ejs.render(htmlTemplate, {
     DATA_FILE: `${id}.json`,
+    ALBUM_DATA: albumData,
     TITLE: title,
+    CONTENT_HTML: contentHtml,
+    DESCRIPTION: meta.description,
     WEBSITE_TITLE_SUFFIX: config.website.url,
     WEBSITE_NAV_BRAND: config.website.navBrand,
     WEBSITE_LOGO: config.website.logo,
     WEBSITE_FONT: config.website.font,
+    FULL_YEAR: new Date().getFullYear(),
+    AUTHOR: meta.author || config.defaultAuthor,
   });
   const htmlPath = path.join(WEB_DIR, `${id}.html`);
   fs.writeFileSync(htmlPath, htmlContent);
